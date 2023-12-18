@@ -1,2 +1,2 @@
-# tesoroseries
-Tesoro - SG Análisis Financiero - Series temporales
+# bdeseries
+Búsqueda y descarga de series del Banco de España
