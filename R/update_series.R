@@ -18,12 +18,6 @@ update_series <- function() {
                      tools::R_user_dir("tesoroseries", which = "data"))
 
 
-  if (!dir.exists(paste0(datos_path))) { # }, "catalogo.feather"))){
-    message("Creating bdeseries data directory...")
-    dir.create(datos_path,
-               recursive = TRUE)
-
-  }
 
   feathers_files_list <- list.files(path=datos_server_path,
                                pattern = ".feather")
@@ -32,7 +26,7 @@ update_series <- function() {
     stop("tesoroseries: update_series(): no files to copy")
   }
 
-  tryCatch({file.copy(paste0(datos_server_path, feathers_files_list), datos_path)},
+  tryCatch({file.copy(paste0(datos_server_path, feathers_files_list), datos_path, overwrite=TRUE)},
            error=function(e) {
              message("Cannot copy feather files to path ", datos_path)
              mesage("Error: ", e)

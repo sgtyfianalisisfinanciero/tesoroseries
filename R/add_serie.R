@@ -26,6 +26,22 @@ add_serie <- function(.df,
                        verbose=FALSE,
                       forceoverwrite = FALSE) {
   
+  
+  
+  # .codigo="AVALES_ICOCOVID_CIR_FINDISPONIBLETOTAL"
+  # .descripcion="Avales ICO Covid-19. CIR. Financiación disponible total"
+  # .fichero=paste0(datos_path, "AVALES_ICOCOVID_CIR_FINDISPONIBLETOTAL", ".feather")
+  # .unidades="euros"
+  # .exponente="1"
+  # .descripcion_unidades_exponente=""
+  # .frecuencia="MENSUAL"
+  # .decimales="0"
+  # .fuente="CIR"
+  # .notas=""
+  # .db=""
+  # verbose=FALSE
+  # forceoverwrite = FALSE
+  
   datos_server_path <- getOption("datos_server_path")
   
   datos_path <- gsub("\\\\",
@@ -48,27 +64,32 @@ add_serie <- function(.df,
     existing_entry <- existing_catalogo |>
       dplyr::filter(nombre == .codigo)
 
-    if((existing_entry$nombre |> unique()) == .codigo) {
-      message("Código ", .codigo, " will be overwritten, since both .nombre matches the already existing fields.")
-    } else if (((existing_entry$nombre |> unique()) != .codigo) & ((existing_entry$nombre |> unique()) != .descripcion)) {
+    if (nrow(existing_entry) == 0) {
       message("New serie ", .codigo, ".")
+    } else if((existing_entry$nombre |> unique()) == .codigo) {
+      message("Código ", .codigo, " will be overwritten, since both .nombre matches the already existing fields.")
+    # } else if (((existing_entry$nombre |> unique()) != .codigo) & ((existing_entry$nombre |> unique()) != .descripcion)) {
+    #   message("New serie ", .codigo, ".")
     } else {
       message("Serie will not be stored.")
       message("Both fields 'nombre' and 'descripcion' need to match existing series' catalog entry.")
       return(NULL)
     }
     
-  } 
+  } else {
+    message("New serie ", .codigo, ".")
+  }
   
 
 
   message("Storing serie ", .codigo, ".")
   
   df_to_save <- .df |>
-    tidyr::pivot_longer(cols=c("fecha"),
+    tidyr::pivot_longer(cols=-c("fecha"),
                  names_to="nombres",
                  values_to="valores") |>
     dplyr::mutate(codigo = .codigo,
+                  nombres = .descripcion,
                   fichero = paste0(datos_server_path, .codigo, ".feather"),
                   decimales = .decimales,
                   exponente = .exponente,
