@@ -20,7 +20,7 @@ update_series <- function() {
 
 
   feathers_files_list <- fs::dir_ls(path=datos_server_path,
-                               pattern = ".feather")
+                               glob = "*.feather")
   
   if(is.null(feathers_files_list)) {
     stop("tesoroseries: update_series(): no files to copy")
