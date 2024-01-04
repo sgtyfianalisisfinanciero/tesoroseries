@@ -19,7 +19,7 @@ update_series <- function() {
 
 
 
-  feathers_files_list <- list.files(path=datos_server_path,
+  feathers_files_list <- fs::dir_ls(path=datos_server_path,
                                pattern = ".feather")
   
   if(is.null(feathers_files_list)) {
