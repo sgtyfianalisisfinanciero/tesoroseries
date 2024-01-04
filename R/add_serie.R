@@ -55,7 +55,7 @@ add_serie <- function(.df,
   
   tryCatch({existing_catalogo_path <- gsub("/",
                                            "\\\\",
-                                           paste0(datos_server_path, "catalogo_db.feather")
+                                           paste0(datos_server_path, "catalogo_db.feather"))
   
             existing_catalogo <- feather::read_feather(existing_catalogo_path)},
            error = function(e) {
