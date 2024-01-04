@@ -53,11 +53,16 @@ add_serie <- function(.df,
     return(NULL)
   }
   
-  tryCatch({existing_catalogo <- feather::read_feather(paste0(datos_server_path, "catalogo_db.feather"))},
+  tryCatch({existing_catalogo_path <- gsub("/",
+                                           "\\\\",
+                                           paste0(datos_server_path, "catalogo_db.feather")
+  
+            existing_catalogo <- feather::read_feather(existing_catalogo_path)},
            error = function(e) {
              message("Cannot read catalogo_db.feather")
              message("Path to file: ", datos_server_path)
              message("Error: ", e)
+             return(NULL)
              })
   
   if(nrow(existing_catalogo) > 0) {
