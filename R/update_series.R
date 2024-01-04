@@ -26,7 +26,7 @@ update_series <- function() {
     stop("tesoroseries: update_series(): no files to copy")
   }
 
-  tryCatch({file.copy(paste0(datos_server_path, feathers_files_list), datos_path, overwrite=TRUE)},
+  tryCatch({file.copy(feathers_files_list, datos_path, overwrite=TRUE)},
            error=function(e) {
              message("Cannot copy feather files to path ", datos_path)
              mesage("Error: ", e)
