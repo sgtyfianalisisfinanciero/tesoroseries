@@ -33,6 +33,7 @@ update_series <- function() {
              stop("tesoroseries: update_series(): cannot copy feather files to path ", datos_path, ": ", e)
            })
   
-  return()
+  message("Series successfully updated locally.")
+  
 
 }
