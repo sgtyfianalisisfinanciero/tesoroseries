@@ -1,5 +1,5 @@
 .onLoad <- function(...) {
-  packageStartupMessage("tesoroseries v0.11-20231220 - miguel@fabiansalazar.es")
+  packageStartupMessage("tesoroseries v0.12-20240104 - miguel@fabiansalazar.es")
   
   datos_server_path <- paste0(gsub("\\\\", 
                                    "/", Sys.getenv("USERPROFILE")), "/OneDrive - MINECO/General - SG Análisis Financiero-Teams/tesoroseries/")
