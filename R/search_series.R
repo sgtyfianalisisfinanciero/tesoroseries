@@ -17,7 +17,7 @@ search_series <- function(search_str,
                           field="descripcion") {
 
 
-  results <- dplyr::tibble(tesoroseries::catalogo)
+  results <- dplyr::tibble(tesoroseries::get_catalog())
 
   for (search_item in search_str) {
     results <- results |> dplyr::filter(grepl(stringr::str_replace(search_item,
