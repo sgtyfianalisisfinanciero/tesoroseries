@@ -89,11 +89,12 @@ add_serie <- function(.df,
 
   message("Storing serie ", .codigo, ".")
   
+  # df con los datos a guardar
   df_to_save <- .df |>
     tidyr::pivot_longer(cols=-c("fecha"),
                  names_to="nombres",
                  values_to="valores") |>
-    dplyr::mutate(codigo = .codigo,
+    dplyr::mutate(codigo = paste0("TESORO_", .codigo),
                   nombres = .descripcion,
                   fichero = paste0(datos_server_path, .codigo, ".feather"),
                   decimales = .decimales,
@@ -104,13 +105,16 @@ add_serie <- function(.df,
                   fuente = .fuente,
                   notas = .notas)
   
+  # guardar en LOCAL
   feather::write_feather(df_to_save,
                          paste0(datos_path, .codigo, ".feather"))
   
+  # guardar en SERVIDOR
   feather::write_feather(df_to_save,
                          paste0(datos_server_path, .codigo, ".feather"))
   
-  .entrada_catalogo <- dplyr::tibble(nombre = .codigo,
+  # entrada de catálogo a añadir
+  .entrada_catalogo <- dplyr::tibble(nombre =  paste0("TESORO_", .codigo),
                               numero = "",
                               alias=.descripcion,
                               fichero = paste0(datos_server_path, .codigo, ".feather"),
