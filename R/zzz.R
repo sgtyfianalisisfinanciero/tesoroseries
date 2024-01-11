@@ -5,7 +5,7 @@
   options("datos_server_path"=datos_server_path)
   options("tesoroseries_version"="v0.14-20240111")
   
-  packageStartupMessage(paste0("tesoroseries", getOption("tesoroseries_version"), "- miguel@fabiansalazar.es"))
+  packageStartupMessage(paste0("tesoroseries ", getOption("tesoroseries_version"), "- miguel@fabiansalazar.es"))
   
 
 
