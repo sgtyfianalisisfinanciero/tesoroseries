@@ -1,16 +1,14 @@
 .onLoad <- function(...) {
-  packageStartupMessage("tesoroseries v0.14-20240111 - miguel@fabiansalazar.es")
-  
   datos_server_path <- paste0(gsub("\\\\", 
                                    "/", Sys.getenv("USERPROFILE")), "/OneDrive - MINECO/General - SG Análisis Financiero-Teams/tesoroseries/")
-
-  # options("datos_server_path"="\\\\SERVERDATOS01/vol3/ANALISIS-FINANCIERO/tesoroseries/datos/")
-  options("datos_server_path"=datos_server_path)
-
   
-  # datos_server_path <- gsub("\\\\", 
-  #                           "/",
-  #                           getOption("datos_server_path"))
+  options("datos_server_path"=datos_server_path)
+  options("tesoroseries_version"="v0.14-20240111")
+  
+  packageStartupMessage(paste0("tesoroseries", getOption("tesoroseries_version"), "- miguel@fabiansalazar.es"))
+  
+
+
 
   datos_path <- gsub("/",
                      "\\\\",

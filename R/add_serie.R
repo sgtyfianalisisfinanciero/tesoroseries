@@ -23,7 +23,7 @@ add_serie <- function(.df,
                       .fuente="",
                       .notas="",
                       .db="",
-                       verbose=FALSE,
+                      verbose=FALSE,
                       forceoverwrite = FALSE) {
   
   
@@ -71,7 +71,7 @@ add_serie <- function(.df,
 
     if (nrow(existing_entry) == 0) {
       message("New serie ", .codigo, ".")
-    } else if((existing_entry$nombre |> unique()) == .codigo) {
+    } else if(((existing_entry$nombre |> unique()) == .codigo) | forceoverwrite == TRUE) {
       message("Código ", .codigo, " will be overwritten, since both .nombre matches the already existing fields.")
     # } else if (((existing_entry$nombre |> unique()) != .codigo) & ((existing_entry$nombre |> unique()) != .descripcion)) {
     #   message("New serie ", .codigo, ".")
