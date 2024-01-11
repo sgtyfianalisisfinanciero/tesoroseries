@@ -68,10 +68,12 @@ add_serie <- function(.df,
   if(nrow(existing_catalogo) > 0) {
     existing_entry <- existing_catalogo |>
       dplyr::filter(nombre == paste0("TESORO_", .codigo |> stringr::str_remove("TESORO_")))
+    
+    message("existing entry$nombre: ", existing_entry)
 
     if (nrow(existing_entry) == 0) {
       message("New serie ", .codigo, ".")
-    } else if(((existing_entry$nombre |> unique()) == .codigo) | forceoverwrite == TRUE) {
+    } else if(((existing_entry$nombre |> unique()) == paste0("TESORO_", .codigo |> stringr::str_remove("TESORO_"))) | forceoverwrite == TRUE) {
       message("Código ", .codigo, " will be overwritten, since both .nombre matches the already existing fields.")
     # } else if (((existing_entry$nombre |> unique()) != .codigo) & ((existing_entry$nombre |> unique()) != .descripcion)) {
     #   message("New serie ", .codigo, ".")
