@@ -11,6 +11,10 @@
 get_series <- function(codes,
                        verbose=FALSE,
                        usefulldatabase=FALSE) {
+  
+  if(length(codes) == 0) {
+    return(NULL)
+  }
 
   datos_path <- gsub("\\\\", "/",
                       tools::R_user_dir("tesoroseries", which = "data"))
