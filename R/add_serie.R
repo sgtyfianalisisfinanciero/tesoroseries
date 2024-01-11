@@ -67,7 +67,7 @@ add_serie <- function(.df,
   
   if(nrow(existing_catalogo) > 0) {
     existing_entry <- existing_catalogo |>
-      dplyr::filter(nombre == .codigo)
+      dplyr::filter(nombre == paste0("TESORO_", .codigo |> stringr::str_remove("TESORO_")))
 
     if (nrow(existing_entry) == 0) {
       message("New serie ", .codigo, ".")
