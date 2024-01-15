@@ -17,7 +17,7 @@ update_series <- function() {
                      "\\\\",
                      tools::R_user_dir("tesoroseries", which = "data"))
 
-  feathers_files_list <- fs::dir_ls(path=datos_server_path,
+  feathers_files_list <- fs::dir_ls(path=datos_path,
                                     glob = "*.feather")
   
   # deleting all existing feather files
