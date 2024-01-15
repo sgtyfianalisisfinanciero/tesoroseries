@@ -17,12 +17,14 @@ update_series <- function() {
                      "\\\\",
                      tools::R_user_dir("tesoroseries", which = "data"))
 
-  feathers_files_list <- fs::dir_ls(path=datos_path,
+  feathers_files_list <- fs::dir_ls(path=datos_server_path,
                                     glob = "*.feather")
+  feathers_files_list_local <- fs::dir_ls(path=datos_path,
+                                    glob="*.feather")
   
   # deleting all existing feather files
   message("Deleting existing .feather files...")
-  fs::file_delete(feathers_files_list)
+  fs::file_delete(feathers_files_list_local)
   
   if(is.null(feathers_files_list)) {
     stop("tesoroseries: update_series(): no files to copy")
