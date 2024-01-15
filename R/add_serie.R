@@ -141,7 +141,7 @@ add_serie <- function(.df,
   
   message("Adding serie to the series in server...")
   feather::write_feather(x=catalogo,
-                         path=paste0(datos_server_path, "catalogo_db.feather"))
+                         path=paste0(datos_server_path, "/catalogo_db.feather"))
   
   message("Adding serie to local db...")
   feather::write_feather(x=catalogo,
