@@ -106,7 +106,8 @@ add_serie <- function(.df,
                   frecuencia = .frecuencia,
                   decimales = .decimales,
                   fuente = .fuente,
-                  notas = .notas)
+                  notas = .notas) |>
+    filter(!is.na(valores))
   
   # guardar en LOCAL
   feather::write_feather(df_to_save,

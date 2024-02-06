@@ -3,7 +3,7 @@
                                    "/", Sys.getenv("USERPROFILE")), "/OneDrive - MINECO/General - SG Análisis Financiero-Teams/tesoroseries/")
   
   options("datos_server_path"=datos_server_path)
-  options("tesoroseries_version"="v0.15-20240115")
+  options("tesoroseries_version"="v0.16-20240206")
   
   packageStartupMessage(paste0("tesoroseries ", getOption("tesoroseries_version"), "- miguel@fabiansalazar.es"))
   
