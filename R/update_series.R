@@ -1,43 +1,56 @@
-#' Update the series.
+#' Checks whether local data has already been updated today. If not, download the full set of series from server.
 #'
-#' This function downloads the datasets from tesoro, replacing the existing feather files containing the series (if any).
+#' Usage:
+#'    update_series(forcedownload = [TRUE|FALSE])
 #'
-#' @keywords update download tesoro series
+#' @keywords download full banco de españa series
 #' @export
 #' @examples
-#' update_series()
-#'
-#'
-#'
-update_series <- function() {
+#' download_series_full()
 
-  datos_server_path <- getOption("datos_server_path")
-  
-  datos_path <- gsub("/",
+update_series <- function(forcedownload=FALSE) {
+
+  .datos_path <- gsub("/",
                      "\\\\",
                      tools::R_user_dir("tesoroseries", which = "data"))
+  
+  
+  .datos_server_path <- getOption("datos_server_path")
+  
+  if (!dir.exists(paste0(.datos_path))) { # }, "catalogo.feather"))){
+    message("Creating tesoroseries data directory...")
+    dir.create(.datos_path,
+               recursive = TRUE)
 
-  feathers_files_list <- fs::dir_ls(path=datos_server_path,
-                                    glob = "*.feather")
-  feathers_files_list_local <- fs::dir_ls(path=datos_path,
-                                    glob="*.feather")
-  
-  # deleting all existing feather files
-  message("Deleting existing .feather files...")
-  fs::file_delete(feathers_files_list_local)
-  
-  if(is.null(feathers_files_list)) {
-    stop("tesoroseries: update_series(): no files to copy")
   }
-
-  tryCatch({file.copy(feathers_files_list, datos_path, overwrite=TRUE)},
-           error=function(e) {
-             message("Cannot copy feather files to path ", datos_path)
-             mesage("Error: ", e)
-             stop("tesoroseries: update_series(): cannot copy feather files to path ", datos_path, ": ", e)
-           })
   
-  message("Series successfully updated locally.")
+  if (!forcedownload) { # if we are not forcing update
+    if (!is.na(as.Date((file.info(paste0(.datos_path, "\\", 
+                                         list.files(.datos_path, pattern="feather") |> 
+                                         sample(1))))$mtime))) { # if mtimes of feather files are not NA
+      message("Date of last update: ", as.Date((file.info(paste0(.datos_path, "\\", 
+                                                                 list.files(.datos_path, 
+                                                                            pattern="feather") |> sample(1))))$mtime)) # print date of latest update
+      
+      if (as.Date((file.info(paste0(.datos_path, "\\", 
+                                    list.files(.datos_path, pattern="feather") |> 
+                                    sample(1))))$mtime) == Sys.Date()) { # check whether latest update's date equals today's
+        message("tesoroseries data have already been downloaded today.")
+        return()
+      } else {
+        download_series_full()
+      }
+    }
+  
+  
+    if(length(list.files(.datos_path, pattern="csv")) == 0) {
+      download_series_full()
+      return()
+    }
+  } else { # forced update
+    download_series_full()
+  }
   
 
 }
+

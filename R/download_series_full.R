@@ -1,50 +1,47 @@
-#' Download the full set of Tesoro series database
+#' Update the series.
 #'
-#' This function downloads and stores the full catalog of Tesoro data series.
+#' This function downloads the datasets from tesoro, replacing the existing feather files containing the series (if any).
 #'
-#' @keywords download full banco de españa series
+#' @keywords update download tesoro series
 #' @export
 #' @examples
-#' download_series_full()
+#' update_series()
+#'
+#'
+#'
+download_series_full <- function() {
 
-download_series_full <- function(forcedownload=FALSE) {
-
-  datos_path <- gsub("/",
+  .datos_server_path <- getOption("datos_server_path")
+  .datos_path <- gsub("/",
                      "\\\\",
                      tools::R_user_dir("tesoroseries", which = "data"))
   
   
-  datos_server_path <- getOption("datos_server_path")
+  zip_file_server_path <- paste0(.datos_server_path, 
+                                 "tesoroseries.zip")
+
+  feathers_files_list_local <- fs::dir_ls(path=.datos_path,
+                                    glob="*.feather")
+  
+  # deleting all existing feather files
+  message("Deleting existing .feather files...")
+  fs::file_delete(feathers_files_list_local)
+
+  
+  if(!file.exists(zip_file_server_path)) {
+    stop("tesoroseries: download_series_full(): tesoroseries.zip does not exist in the server.")
+  }
+
+  # unzipping tesoroseries.zip in local data directory.
+  tryCatch({
+    
+    unzip(zipfile=zip_file_server_path,
+               exdir=paste0(.datos_path, "/"),
+          junkpaths=TRUE)
+
+    })
+  
+  message("Series successfully updated locally.")
   
 
-  if (!dir.exists(paste0(datos_path))) { # }, "catalogo.feather"))){
-    message("Creating tesoroseries data directory...")
-    dir.create(datos_path,
-               recursive = TRUE)
-
-  }
-
-  if(length(list.files(datos_path, pattern="csv")) == 0) {
-    update_series()
-    return()
-  }
-  # 1. listamos los .feather en datos_path,
-  # 2. escogemos alguno de los feather en datos_path, al azar
-  # 3. extraemos fecha de última modificación
-  # 4. comprobamos no es null
-  # 5. comprobamos esta fecha es igual a la de hoy, y no se ha pedido actualización forzosa
-  if (!is.na(as.Date((file.info(paste0(datos_path, "\\", list.files(datos_path, pattern="csv") |> sample(1))))$mtime))) {
-    message("Date of last update: ", as.Date((file.info(paste0(datos_path, "\\", list.files(datos_path, pattern="csv") |> sample(1))))$mtime) )
-    if (as.Date((file.info(paste0(datos_path, "\\", list.files(datos_path, pattern="csv") |> sample(1))))$mtime) == Sys.Date() & !forcedownload) {
-      message("Tesoro data have already been downloaded today.")
-      return()
-    } else {
-      update_series()
-    }
-  }
-
-
-
-
 }
-

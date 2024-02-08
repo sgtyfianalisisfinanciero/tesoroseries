@@ -42,9 +42,9 @@ add_serie <- function(.df,
   # verbose=FALSE
   # forceoverwrite = FALSE
   
-  datos_server_path <- getOption("datos_server_path")
+  .datos_server_path <- getOption("datos_server_path")
   
-  datos_path <- gsub("\\\\",
+  .datos_path <- gsub("\\\\",
                      "/",
                      tools::R_user_dir("tesoroseries", which = "data"))
   
@@ -53,42 +53,51 @@ add_serie <- function(.df,
     return(NULL)
   }
   
-  tryCatch({existing_catalogo_path <- gsub("/",
+  tryCatch({
+    # to avoid possible consistency problems, we always try to update catalogo_db.feather IN THE SERVER, not the local copy
+    zip_file_server_path <- gsub("/",
                                            "\\\\",
-                                           paste0(datos_server_path, "catalogo_db.feather"))
-  
-            existing_catalogo <- feather::read_feather(existing_catalogo_path)},
-           error = function(e) {
-             message("Cannot read catalogo_db.feather")
-             message("Path to file: ", datos_server_path)
-             message("Error: ", e)
-             return(NULL)
-             })
-  
-  if(nrow(existing_catalogo) > 0) {
-    existing_entry <- existing_catalogo |>
-      dplyr::filter(nombre == paste0("TESORO_", .codigo |> stringr::str_remove("TESORO_")))
+                                           paste0(.datos_server_path, "tesoroseries.zip"))
     
-    # message("existing entry$nombre: ", existing_entry)
-
+    temp_dir_catalog_db <- tempdir()
+    
+    zip::unzip(zipfile=zip_file_server_path,
+               files="catalogo_db.feather",
+               exdir=temp_dir_catalog_db)
+    
+    existing_catalogo_path <- paste0(temp_dir_catalog_db, "\\catalogo_db.feather")
+    
+    existing_catalogo <- feather::read_feather(existing_catalogo_path)
+    },
+    error = function(e) {
+      message("Cannot read catalogo_db.feather")
+      message("Path to file: ", .datos_server_path)
+      message("Error: ", e)
+      return(NULL)
+      })
+  
+  if(nrow(existing_catalogo) > 0) { # check that catalogo_db.feather is not an empty one, otherwise it's necessarily a new serie to add
+    existing_entry <- existing_catalogo |>
+      dplyr::filter(nombre == paste0("TESORO_", 
+                                     .codigo |> 
+                                       stringr::str_remove("TESORO_")))
+    # catalogo_db.feather already has some series, but not the one we are trying to add
     if (nrow(existing_entry) == 0) {
       message("New serie ", .codigo, ".")
-    } else if(((existing_entry$nombre |> unique()) == paste0("TESORO_", .codigo |> stringr::str_remove("TESORO_"))) | forceoverwrite == TRUE) {
-      message("Código ", .codigo, " will be overwritten, since both .nombre matches the already existing fields.")
-    # } else if (((existing_entry$nombre |> unique()) != .codigo) & ((existing_entry$nombre |> unique()) != .descripcion)) {
-    #   message("New serie ", .codigo, ".")
-    } else {
-      message("Serie will not be stored.")
-      message("Both fields 'nombre' and 'descripcion' need to match existing series' catalog entry.")
-      return(NULL)
-    }
+      
+    # catalogo_db.feather already contains a serie with the same name as the one to be added
+    } else if(((existing_entry$nombre |> 
+                unique()) == paste0("TESORO_", .codigo |> 
+                                    stringr::str_remove("TESORO_"))) | 
+              forceoverwrite == TRUE) {
+      message("Código ", .codigo, " will be overwritten.")
+      
+    } 
     
   } else {
     message("New serie ", .codigo, ".")
   }
   
-
-
   message("Storing serie ", .codigo, ".")
   
   # df con los datos a guardar
@@ -98,7 +107,7 @@ add_serie <- function(.df,
                  values_to="valores") |>
     dplyr::mutate(codigo = paste0("TESORO_", .codigo),
                   nombres = .descripcion,
-                  fichero = paste0(datos_server_path, .codigo, ".feather"),
+                  fichero = paste0(.datos_server_path, .codigo, ".feather"),
                   unidades=.unidades,
                   decimales = .decimales,
                   exponente = .exponente,
@@ -111,17 +120,21 @@ add_serie <- function(.df,
   
   # guardar en LOCAL
   feather::write_feather(df_to_save,
-                         paste0(datos_path, .codigo, ".feather"))
+                         paste0(.datos_path, "/", .codigo, ".feather"))
   
   # guardar en SERVIDOR
-  feather::write_feather(df_to_save,
-                         paste0(datos_server_path, .codigo, ".feather"))
+  # zip::zip_append(zipfile=zip_file_server_path,
+  #                 files=paste0(.datos_path, .codigo, ".feather"))
   
-  # entrada de catálogo a añadir
+  zip(zipfile=zip_file_server_path,
+                  files=paste0(.datos_path, "/", .codigo, ".feather"),
+                  extras = '-ju')
+  
+    # entrada de catálogo a añadir
   .entrada_catalogo <- dplyr::tibble(nombre =  paste0("TESORO_", .codigo),
                               numero = "",
                               alias=.descripcion,
-                              fichero = paste0(datos_server_path, .codigo, ".feather"),
+                              fichero = paste0(.datos_server_path, .codigo, ".feather"),
                               descripcion=.descripcion, 
                               tipo="",
                               unidades=.unidades,
@@ -140,14 +153,22 @@ add_serie <- function(.df,
     dplyr::bind_rows(.entrada_catalogo) |>
     dplyr::distinct()
   
-  message("Adding serie to the series in server...")
-  feather::write_feather(x=catalogo,
-                         path=paste0(datos_server_path, "/catalogo_db.feather"))
-  
+  # save catalogo_db.feather in LOCAL
   message("Adding serie to local db...")
   feather::write_feather(x=catalogo,
-                         path=paste0(datos_path, "/catalogo_db.feather"))
+                         path=paste0(.datos_path, "/catalogo_db.feather"))
   
+  
+  # save catalogo_db.feather in SERVER
+  message("Adding serie to the series in server...")
+  # zip::zip_append(zipfile=zip_file_server_path,
+  #                 files=paste0(.datos_path, "/catalogo_db.feather"), 
+  #                 extras = '-j')
+  
+  zip(zipfile=zip_file_server_path,
+      files=paste0(.datos_path, "/catalogo_db.feather"), 
+      extras = '-j')
+
   return(.entrada_catalogo)
   
 }
