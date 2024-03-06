@@ -9,10 +9,10 @@
 
 get_catalog <- function(forcedownload=FALSE) {
   
-  datos_path <- gsub("\\\\",
+  .datos_path <- gsub("\\\\",
                      "/",
                      tools::R_user_dir("tesoroseries", which = "data"))
 
-  return(feather::read_feather(path=paste0(datos_path, "/catalogo_db.feather")))
+  return(feather::read_feather(path=paste0(.datos_path, "/catalogo_db.feather")))
 
 }
