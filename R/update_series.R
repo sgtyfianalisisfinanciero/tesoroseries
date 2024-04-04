@@ -25,32 +25,34 @@ update_series <- function(forcedownload=FALSE) {
   }
   
   if (!forcedownload) { # if we are not forcing update
-    if (!is.na(as.Date((file.info(paste0(.datos_path, "\\", 
-                                         list.files(.datos_path, pattern="feather") |> 
-                                         sample(1))))$mtime))) { # if mtimes of feather files are not NA
-      message("Date of last update: ", as.Date((file.info(paste0(.datos_path, "\\", 
-                                                                 list.files(.datos_path, 
-                                                                            pattern="feather") |> sample(1))))$mtime)) # print date of latest update
-      
-      if (as.Date((file.info(paste0(.datos_path, "\\", 
-                                    list.files(.datos_path, pattern="feather") |> 
-                                    sample(1))))$mtime) == Sys.Date()) { # check whether latest update's date equals today's
-        message("tesoroseries data have already been downloaded today.")
-        return()
-      } else {
-        download_series_full()
-      }
-    }
-  
-  
-    if(length(list.files(.datos_path, pattern="csv")) == 0) {
+    
+    if(length(fs::dir_ls(.datos_path, pattern="feather")) > 0) {
+      if (!is.na(as.Date((file.info(paste0(.datos_path, "\\", 
+                                           list.files(.datos_path, pattern="feather") |> 
+                                           sample(1))))$mtime))) { # if mtimes of feather files are not NA
+        
+        message(3)
+        message("Date of last update: ", as.Date((file.info(paste0(.datos_path, "\\", 
+                                                                   list.files(.datos_path, 
+                                                                              pattern="feather") |> sample(1))))$mtime)) # print date of latest update
+        
+        if (as.Date((file.info(paste0(.datos_path, "\\", 
+                                      list.files(.datos_path, pattern="feather") |> 
+                                      sample(1))))$mtime) == Sys.Date()) { # check whether latest update's date equals today's
+          message("tesoroseries data have already been downloaded today.")
+          return()
+        } else {
+          download_series_full()
+        }
+      }      
+    } else { # if there are no .feather files in data folder
       download_series_full()
-      return()
     }
+    
   } else { # forced update
     download_series_full()
   }
   
-
 }
+
 
