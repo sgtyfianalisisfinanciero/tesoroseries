@@ -31,7 +31,6 @@ update_series <- function(forcedownload=FALSE) {
                                            list.files(.datos_path, pattern="feather") |> 
                                            sample(1))))$mtime))) { # if mtimes of feather files are not NA
         
-        message(3)
         message("Date of last update: ", as.Date((file.info(paste0(.datos_path, "\\", 
                                                                    list.files(.datos_path, 
                                                                               pattern="feather") |> sample(1))))$mtime)) # print date of latest update
