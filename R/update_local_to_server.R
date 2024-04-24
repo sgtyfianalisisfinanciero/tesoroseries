@@ -14,9 +14,10 @@ update_local_to_server <- function() {
                       tools::R_user_dir("tesoroseries", which = "data"))
   
   
-  zip_file_server_path <- paste0(.datos_server_path, 
-                                 "tesoroseries.zip")
+  # zip_file_server_path <- paste0(.datos_server_path, 
+  #                                "tesoroseries.zip")
   
+  zip_file_server_path <- iconv(paste0(.datos_server_path, "tesoroseries.zip"),"UTF-8", "UTF-8")
   
   feathers_files_list_local <- fs::dir_ls(path=.datos_path,
                                           glob="*.feather")
