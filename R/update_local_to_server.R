@@ -70,6 +70,7 @@ update_local_to_server <- function(force_update_to_server=FALSE) {
     stop("update_local_to_server: ", e)
   })
   
+  set_last_update_server()
   remove_db_lock()
   
   message("Series successfully updated locally.")

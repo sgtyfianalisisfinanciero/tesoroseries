@@ -17,9 +17,7 @@ update_series <- function(forcedownload=FALSE) {
   
   .datos_server_path <- getOption("datos_server_path")
   
-  # if(check_db_lock() & !forcedownload) {
-  #   stop("add_serie: database lock is set and forcedownload is set to FALSE.")
-  # }
+
   
   if (!dir.exists(paste0(.datos_path))) { # }, "catalogo.feather"))){
     message("Creating tesoroseries data directory...")
@@ -28,33 +26,42 @@ update_series <- function(forcedownload=FALSE) {
 
   }
   
-  if (!forcedownload) { # if we are not forcing update
-    
-    if(length(fs::dir_ls(.datos_path, pattern="feather")) > 0) {
-      if (!is.na(as.Date((file.info(paste0(.datos_path, "\\", 
-                                           list.files(.datos_path, pattern="feather") |> 
-                                           sample(1))))$mtime))) { # if mtimes of feather files are not NA
-        
-        message("Date of last update: ", as.Date((file.info(paste0(.datos_path, "\\", 
-                                                                   list.files(.datos_path, 
-                                                                              pattern="feather") |> sample(1))))$mtime)) # print date of latest update
-        
-        if (as.Date((file.info(paste0(.datos_path, "\\", 
-                                      list.files(.datos_path, pattern="feather") |> 
-                                      sample(1))))$mtime) == Sys.Date()) { # check whether latest update's date equals today's
-          message("tesoroseries data have already been downloaded today.")
-          return()
-        } else {
-          download_series_full()
-        }
-      }      
-    } else { # if there are no .feather files in data folder
-      download_series_full()
-    }
-    
-  } else { # forced update
+  last_updates_dates <- check_last_updates()
+  
+  # if there is no local last update date, do download_series_full()
+  if(is.na(last_updates_dates["local_last_update"])) {
+    message('last_updates_dates["local_last_update"]', last_updates_dates["local_last_update"])
     download_series_full()
+  } else {
+    # if server is more up to date than local
+    if(forcedownload | (last_updates_dates["server_last_update"] > last_updates_dates["local_last_update"])) {
+      if (last_updates_dates["server_last_update"] > last_updates_dates["local_last_update"]) {
+        message("Server data is more up to date than local.")
+        message("Server last update: ", last_updates_dates["server_last_update"])
+        message("Local last update: ", last_updates_dates["local_last_update"])
+        message("Updating local from server...")
+      }
+      
+      if(forcedownload) {
+        message("Forcing update...")
+      }
+      
+      download_series_full()
+      # if local is up to date or more up to date than local
+    } else {
+      message("Server last update: ", last_updates_dates["server_last_update"])
+      message("Local last update: ", last_updates_dates["local_last_update"])
+      if(last_updates_dates["server_last_update"] == last_updates_dates["local_last_update"]) {
+        message("Local data is up to date")
+      } else {
+        message("Local data is more up to date than server data.")
+      }
+    }
   }
+  
+
+  
+
   
 
 }

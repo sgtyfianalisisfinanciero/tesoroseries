@@ -136,6 +136,8 @@ add_serie_local <- function(.df,
   #     files=paste0(.datos_path, "/catalogo_db.feather"),
   #     extras = '-j')
   
+  set_last_update_local()
+  
   return(.entrada_catalogo)
   
 }

@@ -45,6 +45,8 @@ download_series_full <- function(forcedownload=FALSE) {
 
     })
   
+  set_last_update_local()
+  
   message("Series successfully updated locally.")
   
 

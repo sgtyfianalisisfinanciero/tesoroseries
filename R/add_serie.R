@@ -170,6 +170,7 @@ add_serie <- function(.df,
              stop("Could not add serie ", .entrada_catalogo$nombre, " to tesoroseries.zip in server: ", e)
            })
 
+  set_last_update_server()
   
   remove_db_lock()
 

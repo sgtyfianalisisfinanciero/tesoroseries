@@ -3,13 +3,15 @@
                                    "/", Sys.getenv("USERPROFILE")), "/OneDrive - MINECO/General - SG Análisis Financiero-Teams/tesoroseries/")
   
   options("datos_server_path"=.datos_server_path)
-  options("tesoroseries_version"="v0.23-20240429")
+  options("tesoroseries_version"="v0.30-20240429")
   options("lockfilename"=".tesoroseries_lock")
+  options("local_last_update_file"=".local_last_update")
+  options("server_last_update_file"=".server_last_update")
+  
+  .local_last_update_file <- getOption("local_last_update_file")
+  .server_last_update_file <- getOption("server_last_update_file")
   
   packageStartupMessage(paste0("tesoroseries ", getOption("tesoroseries_version"), "- miguel@fabiansalazar.es"))
-  
-
-
 
   .datos_path <- gsub("/",
                      "\\\\",
@@ -22,7 +24,6 @@
                recursive = TRUE)
     
   }
-  
   
   # tesoroseries/ -> inicializar en servidor
   if (!dir.exists(paste0(.datos_server_path))) { # }, 
@@ -44,6 +45,22 @@
     zip::zip(zipfile = paste0(.datos_server_path, "tesoroseries.zip"),
              files="catalogo_db.feather")
   }
+  
+  # if dates of last update do not exist in server and/or local, create
+  # local
+  if(!fs::file_exists(.local_last_update_file)) {
+    message("Local date of last update could not be retrieved.")
+    message("Writing new date of last update in local")
+    set_last_update_local()
+      }
+  # server
+  if(!fs::file_exists(.server_last_update_file)) {
+    message("server date of last update could not be retrieved.")
+    message("Writing new date of last update in local")
+    set_last_update_server()
+    
+  }
+  
   
   update_series()
   
