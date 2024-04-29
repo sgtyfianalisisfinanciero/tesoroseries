@@ -1,11 +1,10 @@
-
-
 #' Check dates of last updates in server and local.
 #'
 #' This function returns a named list containing the date of last update in server ($server_last_update) and the date of last update in local ($local_last_update)
 #' @keywords remove lock database db catalogo_db.feather
 #' @examples
 #' check_last_updates()
+#' @export
 check_last_updates <- function() {
   .datos_server_path <- getOption("datos_server_path")
   .datos_path <- gsub("\\\\",
@@ -67,8 +66,8 @@ check_last_updates <- function() {
 #' @keywords set date last update local
 #' @examples
 #' set_last_update_local()
-#' 
-set_last_update_local <- function() {
+#' @export
+set_last_update_local <- function(equal_to_server=FALSE) {
   .datos_path <- gsub("\\\\",
                       "/",
                       tools::R_user_dir("tesoroseries", which = "data"))
@@ -77,10 +76,18 @@ set_last_update_local <- function() {
     "/",
     getOption("local_last_update_file")
   )
+  
+  if(equal_to_server) {
+    # local date of last update must be equal to the server's last update date.
+    # We check the current date in server, then assign it to date_to_update
+    date_to_update <- check_last_updates()["server_last_update"][[1]]
+  } else {
+    date_to_update = lubridate::now()
+  }
 
   tryCatch({
     feather::write_feather(
-      dplyr::tibble(last_update_date=lubridate::now()),
+      dplyr::tibble(last_update_date=date_to_update),
       .local_last_update_file
     )
   },
@@ -97,8 +104,8 @@ set_last_update_local <- function() {
 #' @keywords set date last update local
 #' @examples
 #' set_last_update_server()
-#' 
-set_last_update_server <- function() {
+#' @export
+set_last_update_server <- function(equal_to_local=FALSE) {
   .datos_server_path <- getOption("datos_server_path")
   
   .server_last_update_file <- paste0(
@@ -107,9 +114,17 @@ set_last_update_server <- function() {
     getOption("server_last_update_file")
   )
   
+  if(equal_to_local) {
+    # local date of last update must be equal to the server's last update date.
+    # We check the current date in server, then assign it to date_to_update
+    date_to_update <- check_last_updates()["local_last_update"][[1]]
+  } else {
+    date_to_update = lubridate::now()
+  }
+  
   tryCatch({
     feather::write_feather(
-      dplyr::tibble(last_update_date=lubridate::now()),
+      dplyr::tibble(last_update_date=date_to_update),
       .server_last_update_file
     )
   },
@@ -126,7 +141,7 @@ set_last_update_server <- function() {
 #' @keywords check lock database db catalogo_db.feather
 #' @examples
 #' check_db_lock()
-
+#' @export
 check_db_lock <- function() {
   .datos_server_path <- getOption("datos_server_path")
   lockfilename <- paste0(.datos_server_path,
@@ -143,7 +158,7 @@ check_db_lock <- function() {
 #' @keywords regenerate generate database db catalogo_db.feather
 #' @examples
 #' set_db_lock()
-
+#' @export
 set_db_lock <- function() {
   .datos_server_path <- getOption("datos_server_path")
   lockfilename <- paste0(.datos_server_path,
@@ -165,7 +180,7 @@ set_db_lock <- function() {
 #' @keywords remove database lock catalogo_db.feather
 #' @examples
 #' remove_db_lock()
-
+#' @export
 remove_db_lock <- function() {
   .datos_server_path <- getOption("datos_server_path")
   lockfilename <- paste0(.datos_server_path,

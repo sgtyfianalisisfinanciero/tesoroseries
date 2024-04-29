@@ -3,7 +3,7 @@
 #' @keywords get tesoroseries version
 #' @examples
 #' version()
-#' s@export
+#' @export
 
 version <- function() {
   

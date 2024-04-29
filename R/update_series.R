@@ -1,13 +1,11 @@
-#' Checks whether local data has already been updated today. If not, download the full set of series from server.
+#' Update local data if it is not up to date with server.
 #'
 #' Usage:
 #'    update_series(forcedownload = [TRUE|FALSE])
 #'
-#' @keywords download full banco de españa series
+#' @keywords update tesoroseries
 #' @export
-#' @examples
-#' download_series_full()
-
+#' update_series()
 update_series <- function(forcedownload=FALSE) {
 
   .datos_path <- gsub("/",
@@ -47,6 +45,9 @@ update_series <- function(forcedownload=FALSE) {
       }
       
       download_series_full()
+      
+      set_last_update_local(equal_to_server=TRUE)
+      
       # if local is up to date or more up to date than local
     } else {
       message("Server last update: ", last_updates_dates["server_last_update"])
@@ -59,11 +60,9 @@ update_series <- function(forcedownload=FALSE) {
     }
   }
   
-
+  set_last_update_local(equal_to_server=TRUE)
   
-
   
-
 }
 
 

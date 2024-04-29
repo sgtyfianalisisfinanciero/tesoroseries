@@ -1,4 +1,9 @@
 .onLoad <- function(...) {
+  .datos_path <- paste0(gsub("/",
+                      "\\\\",
+                      tools::R_user_dir("tesoroseries", which = "data")),
+                      "\\"
+  )
   .datos_server_path <- paste0(gsub("\\\\", 
                                    "/", Sys.getenv("USERPROFILE")), "/OneDrive - MINECO/General - SG Análisis Financiero-Teams/tesoroseries/")
   
@@ -13,9 +18,6 @@
   
   packageStartupMessage(paste0("tesoroseries ", getOption("tesoroseries_version"), "- miguel@fabiansalazar.es"))
 
-  .datos_path <- gsub("/",
-                     "\\\\",
-                     tools::R_user_dir("tesoroseries", which = "data"))
   
   # tesoroseries/ -> inicializar en local
   if (!dir.exists(paste0(.datos_path))) { # }, 
@@ -48,18 +50,28 @@
   
   # if dates of last update do not exist in server and/or local, create
   # local
-  if(!fs::file_exists(.local_last_update_file)) {
+  if(!fs::file_exists(
+    paste0(
+      .datos_path,
+      .local_last_update_file
+      ))) {
     message("Local date of last update could not be retrieved.")
     message("Writing new date of last update in local")
     set_last_update_local()
       }
   # server
-  if(!fs::file_exists(.server_last_update_file)) {
+  if(!fs::file_exists(
+    paste0(
+      .datos_server_path,
+      .server_last_update_file
+      ))) {
     message("server date of last update could not be retrieved.")
     message("Writing new date of last update in local")
     set_last_update_server()
     
   }
+  
+  # check_last_updates()
   
   
   update_series()
