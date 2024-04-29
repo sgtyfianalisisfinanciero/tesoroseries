@@ -78,17 +78,19 @@ add_serie_local <- function(.df,
     tidyr::pivot_longer(cols=-c("fecha"),
                         names_to="nombres",
                         values_to="valores") |>
-    dplyr::mutate(codigo = paste0("TESORO_", .codigo),
-                  nombres = .descripcion,
-                  fichero = paste0(.datos_server_path, .codigo, ".feather"),
-                  unidades=.unidades,
-                  decimales = .decimales,
-                  exponente = .exponente,
-                  descripcion_unidades_exponente = .descripcion_unidades_exponente,
-                  frecuencia = .frecuencia,
-                  decimales = .decimales,
-                  fuente = .fuente,
-                  notas = .notas) |>
+    dplyr::mutate(
+      codigo = paste0("TESORO_", .codigo),
+      nombres = .descripcion,
+      fichero = paste0(.datos_server_path, .codigo, ".feather"),
+      unidades=.unidades,
+      decimales = .decimales,
+      exponente = .exponente,
+      descripcion_unidades_exponente = .descripcion_unidades_exponente,
+      frecuencia = .frecuencia,
+      decimales = .decimales,
+      fuente = .fuente,
+      notas = .notas
+    ) |>
     filter(!is.na(valores))
   
   # guardar en LOCAL
@@ -114,7 +116,10 @@ add_serie_local <- function(.df,
                                      fuente = .fuente,
                                      notas = .notas)
   
+  
   catalogo <- existing_catalogo |>
+    # eliminamos entrada del catálogo con mismo nombre para no añadir dos series repetidas cuando aumenta numero_observaciones
+    filter(nombre != .entrada_catalogo$nombre) |>
     dplyr::bind_rows(.entrada_catalogo) |>
     dplyr::distinct()
   
@@ -124,14 +129,10 @@ add_serie_local <- function(.df,
                          path=paste0(.datos_path, "/catalogo_db.feather"))
   
   
-  # # save catalogo_db.feather in SERVER
+  # save catalogo_db.feather in SERVER
   # message("Adding serie to the series in server...")
-  # # zip::zip_append(zipfile=zip_file_server_path,
-  # #                 files=paste0(.datos_path, "/catalogo_db.feather"), 
-  # #                 extras = '-j')
-  
   # zip(zipfile=zip_file_server_path,
-  #     files=paste0(.datos_path, "/catalogo_db.feather"), 
+  #     files=paste0(.datos_path, "/catalogo_db.feather"),
   #     extras = '-j')
   
   return(.entrada_catalogo)
