@@ -24,12 +24,13 @@ add_serie_local <- function(.df,
                       verbose=FALSE,
                       forceoverwrite = FALSE) {
   
-  
   .datos_server_path <- getOption("datos_server_path")
   
   .datos_path <- gsub("\\\\",
                       "/",
                       tools::R_user_dir("tesoroseries", which = "data"))
+  
+  
   
   if(is.null(.df) | ncol(.df) > 2) {
     message("Dataframe cannot have more than two columns.")

@@ -1,7 +1,7 @@
 Package: tesoroseries
 Type: Package
 Title: Retrieve time series from Tesoro.
-Version: 0.22-20240409
+Version: 0.23-20240429
 Author: Miguel Fabian Salazar
 Maintainer: Miguel Fabian Salazar <miguel@fabiansalazar.es>
 Description: tesoroseries retrieves series from internal Tesoro series storage.

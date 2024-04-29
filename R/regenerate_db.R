@@ -8,7 +8,8 @@
 #' @examples
 #' regenerate_db()
 #' s@export
-regenerate_db <- function(update_to_server=FALSE) {
+regenerate_db <- function(update_to_server=FALSE,
+                          force_update_to_server=FALSE) {
   
   .datos_server_path <- getOption("datos_server_path")
   .datos_path <- gsub("/",
@@ -94,6 +95,13 @@ regenerate_db <- function(update_to_server=FALSE) {
   message("Series successfully regenerated and updated locally.")
   
   if(update_to_server) {
+    
+    if(check_db_lock() & !force_update_to_server) {
+      stop("add_serie: database lock is set and forcedownload is set to FALSE.")
+    }
+    
+    set_db_lock()
+    
     message("Updating catalogo_db.feather to server...")
     # zipping local data directory to tesoroseries.zip in server
     tryCatch({
@@ -106,6 +114,9 @@ regenerate_db <- function(update_to_server=FALSE) {
       stop("update_local_to_server: ", e)
     })
     
+    
+    remove_db_lock()
+      
   }
   
   

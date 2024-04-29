@@ -6,15 +6,18 @@
 #' @examples
 #' update_local_to_server()
 #' s@export
-update_local_to_server <- function() {
+update_local_to_server <- function(force_update_to_server=FALSE) {
   
   .datos_server_path <- getOption("datos_server_path")
   .datos_path <- gsub("/",
                       "\\\\",
                       tools::R_user_dir("tesoroseries", which = "data"))
   
-  # zip_file_server_path <- paste0(.datos_server_path, 
-  #                                "tesoroseries.zip")
+  if(check_db_lock() & !force_update_to_server) {
+    stop("add_serie: database lock is set and forcedownload is set to FALSE.")
+  }
+  
+  set_db_lock()
   
   zip_file_server_path <- iconv(paste0(.datos_server_path, "tesoroseries.zip"),
                                 "UTF-8", 
@@ -66,6 +69,8 @@ update_local_to_server <- function() {
   error = function(e) {
     stop("update_local_to_server: ", e)
   })
+  
+  remove_db_lock()
   
   message("Series successfully updated locally.")
   

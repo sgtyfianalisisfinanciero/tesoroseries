@@ -17,6 +17,13 @@ update_series <- function(forcedownload=FALSE) {
   
   .datos_server_path <- getOption("datos_server_path")
   
+  if(check_db_lock() & !forcedownload) {
+    stop("add_serie: database lock is set and forcedownload is set to FALSE.")
+  }
+  
+  set_db_lock()
+  
+  
   if (!dir.exists(paste0(.datos_path))) { # }, "catalogo.feather"))){
     message("Creating tesoroseries data directory...")
     dir.create(.datos_path,
@@ -51,6 +58,8 @@ update_series <- function(forcedownload=FALSE) {
   } else { # forced update
     download_series_full()
   }
+  
+  remove_db_lock()
   
 }
 

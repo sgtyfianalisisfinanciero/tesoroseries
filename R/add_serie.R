@@ -32,6 +32,13 @@ add_serie <- function(.df,
                      "/",
                      tools::R_user_dir("tesoroseries", which = "data"))
   
+  
+  if(check_db_lock() & !forceoverwrite) {
+    stop("add_serie: database lock is set and forceoverwrite is set to FALSE.")
+  } else {
+    set_db_lock()
+  }
+  
   if(is.null(.df) | ncol(.df) > 2) {
     message("Dataframe cannot have more than two columns.")
     return(NULL)
@@ -163,6 +170,8 @@ add_serie <- function(.df,
              stop("Could not add serie ", .entrada_catalogo$nombre, " to tesoroseries.zip in server: ", e)
            })
 
+  
+  remove_db_lock()
 
   return(.entrada_catalogo)
   

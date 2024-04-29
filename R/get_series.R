@@ -10,14 +10,17 @@
 
 get_series <- function(codes,
                        verbose=FALSE,
-                       usefulldatabase=FALSE) {
+                       usefulldatabase=FALSE,
+                       .forcedownload=FALSE) {
   
   if(length(codes) == 0) {
+    message("No codes to be retrieved.")
     return(NULL)
   }
-
+  
   datos_path <- gsub("\\\\", "/",
                       tools::R_user_dir("tesoroseries", which = "data"))
+  
 
 
   .series_final_df <- dplyr::tibble()

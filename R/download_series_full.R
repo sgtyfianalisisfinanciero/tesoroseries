@@ -9,12 +9,16 @@
 #'
 #'
 #'
-download_series_full <- function() {
+download_series_full <- function(forcedownload=FALSE) {
 
   .datos_server_path <- getOption("datos_server_path")
   .datos_path <- gsub("/",
                      "\\\\",
                      tools::R_user_dir("tesoroseries", which = "data"))
+  
+  if(check_db_lock() & !forcedownload) {
+    stop("add_serie: database lock is set and forcedownload is set to FALSE.")
+  }
   
   
   zip_file_server_path <- paste0(.datos_server_path, 
