@@ -26,9 +26,6 @@ add_serie <- function(.df,
                       verbose=FALSE,
                       forceoverwrite = FALSE) {
   
-  
-
-  
   .datos_server_path <- getOption("datos_server_path")
   
   .datos_path <- gsub("\\\\",
@@ -105,17 +102,7 @@ add_serie <- function(.df,
                   notas = .notas) |>
     filter(!is.na(valores))
   
-  # guardar en LOCAL
-  feather::write_feather(df_to_save,
-                         paste0(.datos_path, "/", .codigo, ".feather"))
-  
-  # guardar en SERVIDOR
-  # zip::zip_append(zipfile=zip_file_server_path,
-  #                 files=paste0(.datos_path, .codigo, ".feather"))
-  
-  zip(zipfile=zip_file_server_path,
-                  files=paste0(.datos_path, "/", .codigo, ".feather"),
-                  extras = '-ju')
+
   
     # entrada de catálogo a añadir
   .entrada_catalogo <- dplyr::tibble(nombre =  paste0("TESORO_", .codigo),
@@ -137,22 +124,45 @@ add_serie <- function(.df,
                               notas = .notas)
   
   catalogo <- existing_catalogo |>
+    # eliminamos entrada del catálogo con mismo nombre para no añadir dos series repetidas cuando aumenta numero_observaciones
+    filter(nombre != .entrada_catalogo$nombre) |>
     dplyr::bind_rows(.entrada_catalogo) |>
     dplyr::distinct()
   
-  # save catalogo_db.feather in LOCAL
-  message("Adding serie to local db...")
-  feather::write_feather(x=catalogo,
-                         path=paste0(.datos_path, "/catalogo_db.feather"))
   
+  # save to LOCAL
   
-  # save catalogo_db.feather in SERVER
-  message("Adding serie to the series in server...")
+  message("Saving serie to local...")
+  tryCatch({  
+    feather::write_feather(df_to_save,
+                           paste0(.datos_path, "/", .codigo, ".feather"))
+    
+    message("Adding serie to local db...")
+    feather::write_feather(x=catalogo,
+                           path=paste0(.datos_path, "/catalogo_db.feather"))
+  },
+  error=function(e) {
+    stop("Could not add serie ", .entrada_catalogo$nombre, " to tesoroseries.zip in LOCAL: ", e)
+  })
+  
 
+  # save catalogo_db.feather to SERVER
+  message("Adding serie to the series in server...")
   
-  zip(zipfile=zip_file_server_path,
-      files=paste0(.datos_path, "/catalogo_db.feather"), 
-      extras = '-j')
+  tryCatch({  
+    zip(zipfile=zip_file_server_path,
+                  files=paste0(.datos_path, "/catalogo_db.feather"), 
+                  extras = '-j')
+    
+    # guardar en SERVIDOR
+    zip(zipfile=zip_file_server_path,
+        files=paste0(.datos_path, "/", .codigo, ".feather"),
+        extras = '-ju')
+    },
+           error=function(e) {
+             stop("Could not add serie ", .entrada_catalogo$nombre, " to tesoroseries.zip in server: ", e)
+           })
+
 
   return(.entrada_catalogo)
   
