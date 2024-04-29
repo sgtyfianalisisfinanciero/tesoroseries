@@ -13,11 +13,12 @@ update_local_to_server <- function() {
                       "\\\\",
                       tools::R_user_dir("tesoroseries", which = "data"))
   
-  
   # zip_file_server_path <- paste0(.datos_server_path, 
   #                                "tesoroseries.zip")
   
-  zip_file_server_path <- iconv(paste0(.datos_server_path, "tesoroseries.zip"),"UTF-8", "UTF-8")
+  zip_file_server_path <- iconv(paste0(.datos_server_path, "tesoroseries.zip"),
+                                "UTF-8", 
+                                "UTF-8")
   
   feathers_files_list_local <- fs::dir_ls(path=.datos_path,
                                           glob="*.feather")
@@ -30,13 +31,36 @@ update_local_to_server <- function() {
   # zipping local data directory to tesoroseries.zip in server
   tryCatch({
     
-    zip(zipfile=zip_file_server_path,
-        files=feathers_files_list_local,
-        extras = '-j')
+    # zip(zipfile=zip_file_server_path,
+    #     files=feathers_files_list_local,
+    #     extras = '-j')
+    # 
+    # zip(zipfile=zip_file_server_path,
+    #     files=paste0(.datos_path, "/catalogo_db.feather"), 
+    #     extras = '-j')
     
-    zip(zipfile=zip_file_server_path,
-        files=paste0(.datos_path, "/catalogo_db.feather"), 
-        extras = '-j')
+    temp_feathers_files_zipfile <- tempfile()
+    
+    feathers_files_list_local <-c(
+      feathers_files_list_local, 
+      paste0(.datos_path, "/catalogo_db.feather")
+    )
+    
+    message("Zipping LOCAL files together...")
+    
+    zip(
+      zipfile=temp_feathers_files_zipfile,
+      files=feathers_files_list_local,
+      # extras = '-j'
+    )
+    
+    fs::file_copy(
+      paste0(temp_feathers_files_zipfile,
+             ".zip"),
+      zip_file_server_path,
+      overwrite=TRUE
+    )
+    
     
   },
   error = function(e) {
