@@ -52,7 +52,7 @@
   # local
   if(!fs::file_exists(
     paste0(
-      # .datos_path,
+      .datos_path,
       .local_last_update_file
       ))) {
     message("Local date of last update could not be retrieved.")
@@ -62,7 +62,7 @@
   # server
   if(!fs::file_exists(
     paste0(
-      # .datos_server_path,
+      .datos_server_path,
       .server_last_update_file
       ))) {
     message("server date of last update could not be retrieved.")
