@@ -36,7 +36,7 @@ check_last_updates <- function() {
   tryCatch(
     {
       
-      message("1: ", .server_last_update_file)
+      # message("1: ", .server_last_update_file)
       
       server_last_update <- feather::read_feather(
         .server_last_update_file
@@ -45,7 +45,7 @@ check_last_updates <- function() {
       
       message("server_last_update: ", server_last_update)
       
-      message("2: ", .local_last_update_file)
+      # message("2: ", .local_last_update_file)
       
       local_last_update <- feather::read_feather(
         .local_last_update_file

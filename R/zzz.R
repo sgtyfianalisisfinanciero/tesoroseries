@@ -25,6 +25,24 @@
     
   }
   
+  # if there is no tesoroseries.zip in server, we initialize an empty one.
+  if(!file.exists(paste0(.datos_path, "/", "catalogo_db.feather"))) {
+    message("catalog_db.feather does not exist in local .datos_path. Creating...")
+    # tempdir_tesoroseries_zip_path <- gsub("\\\\","/",
+    #                                       paste0(tempdir(), "\\catalogo_db.feather"))
+    
+    feather::write_feather(dplyr::tibble(),
+                           paste0(
+                             .datos_path,
+                             "/",
+                             "catalogo_db.feather"
+                             )
+                           )
+    
+    # zip::zip(zipfile = paste0(.datos_server_path, "/", "tesoroseries.zip"),
+    #          files=tempdir_tesoroseries_zip_path)
+  }
+  
   # tesoroseries/ -> inicializar en servidor
   if (!dir.exists(paste0(.datos_server_path))) { # }, 
     message("Creating tesoroseries data directory...")
@@ -37,14 +55,16 @@
   if(!file.exists(paste0(.datos_server_path, "/", "tesoroseries.zip"))) {
     message("tesoroseries.zip does not exist. Creating...")
     tempdir_tesoroseries_zip_path <- gsub("\\\\","/",
-                                          
                                           paste0(tempdir(), "\\catalogo_db.feather"))
-    catalogo_db <- dplyr::tibble()
+
+    feather::write_feather(dplyr::tibble(),
+                           tempdir_tesoroseries_zip_path)
     
-    feather::write_feather(catalogo_db, "catalogo_db.feather")
-    zip::zip(zipfile = paste0(.datos_server_path, "tesoroseries.zip"),
-             files="catalogo_db.feather")
+    zip::zip(zipfile = paste0(.datos_server_path, "/", "tesoroseries.zip"),
+             files=tempdir_tesoroseries_zip_path)
   }
+  
+  
   
   # if dates of last update do not exist in server and/or local, create
   # local

@@ -33,9 +33,9 @@ download_series_full <- function(forcedownload=FALSE) {
   fs::file_delete(feathers_files_list_local)
 
   
-  if(!file.exists(zip_file_server_path)) {
-    stop("tesoroseries: download_series_full(): tesoroseries.zip does not exist in the server.")
-  }
+  # if(!file.exists(zip_file_server_path)) {
+  #   stop("tesoroseries: download_series_full(): tesoroseries.zip does not exist in the server.")
+  # }
 
   # unzipping tesoroseries.zip in local data directory.
   tryCatch({
@@ -44,7 +44,10 @@ download_series_full <- function(forcedownload=FALSE) {
                exdir=paste0(.datos_path, "/"),
           junkpaths=TRUE)
 
-    })
+    },
+    error = function(e) {
+      stop("download_series_full.R: ", e)
+      })
   
   set_last_update_local()
   
