@@ -88,7 +88,6 @@ add_serie_local <- function(.df,
       exponente = .exponente,
       descripcion_unidades_exponente = .descripcion_unidades_exponente,
       frecuencia = .frecuencia,
-      decimales = .decimales,
       fuente = .fuente,
       notas = .notas
     ) |>
@@ -99,23 +98,25 @@ add_serie_local <- function(.df,
                          paste0(.datos_path, "/", .codigo, ".feather"))
   
   # entrada de catálogo a añadir
-  .entrada_catalogo <- dplyr::tibble(nombre =  paste0("TESORO_", .codigo),
-                                     numero = "",
-                                     alias=.descripcion,
-                                     fichero = paste0(.datos_server_path, "/", .codigo, ".feather"),
-                                     descripcion=.descripcion, 
-                                     tipo="",
-                                     unidades=.unidades,
-                                     decimales = .decimales,
-                                     exponente = .exponente,
-                                     numero_observaciones=nrow(.df),
-                                     descripcion_unidades_exponente = .descripcion_unidades_exponente,
-                                     fecha_primera_observacion=min(.df$fecha),
-                                     fecha_ultima_observacion=max(.df$fecha),
-                                     titulo="",
-                                     frecuencia = .frecuencia,
-                                     fuente = .fuente,
-                                     notas = .notas)
+  .entrada_catalogo <- dplyr::tibble(
+    nombre =  paste0("TESORO_", .codigo),
+    numero = "",
+    alias=.descripcion,
+    fichero = paste0(.codigo, ".feather"),
+    descripcion=.descripcion, 
+    tipo="",
+    unidades=.unidades,
+    decimales = .decimales,
+    exponente = .exponente,
+    numero_observaciones=nrow(.df),
+    descripcion_unidades_exponente = .descripcion_unidades_exponente,
+    fecha_primera_observacion=min(.df$fecha),
+    fecha_ultima_observacion=max(.df$fecha),
+    titulo="",
+    frecuencia = .frecuencia,
+    fuente = .fuente,
+    notas = .notas
+  )
   
   
   catalogo <- existing_catalogo |>

@@ -28,8 +28,19 @@ get_series <- function(codes,
 
   for (.code in codes) {
     
-    .series_final_df <- dplyr::bind_rows(.series_final_df,
-              feather::read_feather(paste0(datos_path, "/", stringr::str_remove(.code, "TESORO_"), ".feather")))
+    tryCatch({
+      .series_final_df <- dplyr::bind_rows(
+        .series_final_df,
+        feather::read_feather(
+          paste0(datos_path, "/", stringr::str_remove(.code, "TESORO_"), ".feather")
+          )
+        )
+    },
+    error=function(e) {
+      
+    })
+    
+
 
   }
 

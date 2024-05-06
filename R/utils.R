@@ -23,43 +23,55 @@ check_last_updates <- function() {
   )
 
   
-  if(!fs::file_exists(.local_last_update_file) & 
-     !fs::file_exists(.server_last_update_file)) {
-    message("Local last update file_exists output: ", fs::file_exists(.local_last_update_file))
-    message("Server last update file exists: ", fs::file_exists(.server_last_update_file))
+
+  
+  # if there is no last update file in server, abort
+  if(!fs::file_exists(.server_last_update_file)) {
+    message("Server last update file does not exist: ")
     stop("Aborting...")
   }
   
-  
   # retrieve dates of last update from server and local
-  # if local date of last update does not exists, a new one will be created.
   tryCatch(
     {
-      
-      # message("1: ", .server_last_update_file)
-      
       server_last_update <- feather::read_feather(
         .server_last_update_file
       ) |>
         _$last_update_date
-      
-      message("server_last_update: ", server_last_update)
-      
-      # message("2: ", .local_last_update_file)
-      
-      local_last_update <- feather::read_feather(
-        .local_last_update_file
-      ) |>
-        _$last_update_date
-      
-      message("local_last_update: ", local_last_update)
     },
     error = function(e) {
-      stop("check_last_updates: Error reading/writing dates of last update: ", e)
+      stop("check_last_updates: Error reading/writing dates of server last update: ", e)
     }
   )
   
   
+  # if there is no last update file in LOCAL, return earliest possible date
+  if(!fs::file_exists(.local_last_update_file)) {
+    fs::file_copy(.server_last_update_file,
+                  .local_last_update_file)
+    
+    local_last_update <- as.Date(0)
+    
+  } else {
+  # otherwise, local date exists so it is read and returned.
+    tryCatch(
+      {
+        # message("2: ", .local_last_update_file)
+        
+        local_last_update <- feather::read_feather(
+          .local_last_update_file
+        ) |>
+          _$last_update_date
+        
+        message("local_last_update: ", local_last_update)
+      },
+      error = function(e) {
+        stop("check_last_updates: Error reading/writing dates of last update: ", e)
+      }
+    )
+  }
+    
+  # retrieve dates of last update from server and local
   return(c(
     server_last_update=server_last_update,
     local_last_update=local_last_update
