@@ -35,12 +35,17 @@ check_last_updates <- function() {
   # if local date of last update does not exists, a new one will be created.
   tryCatch(
     {
+      
+      message("1: ", .server_last_update_file)
+      
       server_last_update <- feather::read_feather(
         .server_last_update_file
       ) |>
         _$last_update_date
       
       message("server_last_update: ", server_last_update)
+      
+      message("2: ", .local_last_update_file)
       
       local_last_update <- feather::read_feather(
         .local_last_update_file
