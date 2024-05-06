@@ -25,8 +25,8 @@ check_last_updates <- function() {
   
   if(!fs::file_exists(.local_last_update_file) & 
      !fs::file_exists(.server_last_update_file)) {
-    message("Local last update file exists: ", fs::file_exists(local_last_update_file_path))
-    message("Server last update file exists: ", fs::file_exists(server_last_update_file_path))
+    message("Local last update file_exists output: ", fs::file_exists(.local_last_update_file))
+    message("Server last update file exists: ", fs::file_exists(.server_last_update_file))
     stop("Aborting...")
   }
   
