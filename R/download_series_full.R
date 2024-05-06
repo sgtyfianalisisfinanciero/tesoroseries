@@ -22,6 +22,7 @@ download_series_full <- function(forcedownload=FALSE) {
   
   
   zip_file_server_path <- paste0(.datos_server_path, 
+                                 "/",
                                  "tesoroseries.zip")
 
   feathers_files_list_local <- fs::dir_ls(path=.datos_path,
