@@ -5,7 +5,7 @@
                       "\\"
   )
   .datos_server_path <- paste0(gsub("\\\\", 
-                                   "/", Sys.getenv("USERPROFILE")), "/OneDrive - MINECO/General - SG Análisis Financiero-Teams/tesoroseries/")
+                                   "/", Sys.getenv("USERPROFILE")), "/OneDrive - MINECO/General - SG Análisis Financiero-Teams/tesoroseries")
   
   options("datos_server_path"=.datos_server_path)
   options("tesoroseries_version"="v0.30-20240429")
