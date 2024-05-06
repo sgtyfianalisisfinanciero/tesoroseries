@@ -1,9 +1,7 @@
 .onLoad <- function(...) {
-  .datos_path <- paste0(gsub("/",
+  .datos_path <- gsub("/",
                       "\\\\",
-                      tools::R_user_dir("tesoroseries", which = "data")),
-                      "\\"
-  )
+                      tools::R_user_dir("tesoroseries", which = "data"))
   .datos_server_path <- paste0(gsub("\\\\", 
                                    "/", Sys.getenv("USERPROFILE")), "/OneDrive - MINECO/General - SG Análisis Financiero-Teams/tesoroseries")
   
@@ -53,6 +51,7 @@
   if(!fs::file_exists(
     paste0(
       .datos_path,
+      "/",
       .local_last_update_file
       ))) {
     message("Local date of last update could not be retrieved.")
@@ -63,6 +62,7 @@
   if(!fs::file_exists(
     paste0(
       .datos_server_path,
+      "/",
       .server_last_update_file
       ))) {
     message("server date of last update could not be retrieved.")
