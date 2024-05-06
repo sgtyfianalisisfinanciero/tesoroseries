@@ -34,7 +34,7 @@
   }
   
   # if there is no tesoroseries.zip in server, we initialize an empty one.
-  if(!file.exists(paste0(.datos_server_path, "tesoroseries.zip"))) {
+  if(!file.exists(paste0(.datos_server_path, "/", "tesoroseries.zip"))) {
     message("tesoroseries.zip does not exist. Creating...")
     tempdir_tesoroseries_zip_path <- gsub("\\\\","/",
                                           
