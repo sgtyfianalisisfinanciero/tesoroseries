@@ -19,7 +19,7 @@ update_local_to_server <- function(force_update_to_server=FALSE) {
   
   set_db_lock()
   
-  zip_file_server_path <- iconv(paste0(.datos_server_path, "tesoroseries.zip"),
+  zip_file_server_path <- iconv(paste0(.datos_server_path, "/", "tesoroseries.zip"),
                                 "UTF-8", 
                                 "UTF-8")
   

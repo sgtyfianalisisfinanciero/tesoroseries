@@ -48,7 +48,7 @@ add_serie <- function(.df,
     # to avoid possible consistency problems, we always try to update catalogo_db.feather IN THE SERVER, not the local copy
     zip_file_server_path <- gsub("/",
                                            "\\\\",
-                                           paste0(.datos_server_path, "tesoroseries.zip"))
+                                           paste0(.datos_server_path, "/" , "tesoroseries.zip"))
     
     temp_dir_catalog_db <- tempdir()
     
@@ -98,7 +98,7 @@ add_serie <- function(.df,
                  values_to="valores") |>
     dplyr::mutate(codigo = paste0("TESORO_", .codigo),
                   nombres = .descripcion,
-                  fichero = paste0(.datos_server_path, .codigo, ".feather"),
+                  fichero = paste0(.datos_server_path, "/", .codigo, ".feather"),
                   unidades=.unidades,
                   decimales = .decimales,
                   exponente = .exponente,
@@ -115,7 +115,7 @@ add_serie <- function(.df,
   .entrada_catalogo <- dplyr::tibble(nombre =  paste0("TESORO_", .codigo),
                               numero = "",
                               alias=.descripcion,
-                              fichero = paste0(.datos_server_path, .codigo, ".feather"),
+                              fichero = paste0(.datos_server_path, "/", .codigo, ".feather"),
                               descripcion=.descripcion, 
                               tipo="",
                               unidades=.unidades,
