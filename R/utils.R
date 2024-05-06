@@ -40,15 +40,17 @@ check_last_updates <- function() {
       ) |>
         _$last_update_date
       
+      message("server_last_update: ", server_last_update)
+      
       local_last_update <- feather::read_feather(
         .local_last_update_file
       ) |>
         _$last_update_date
       
-      
+      message("local_last_update: ", local_last_update)
     },
     error = function(e) {
-      message("check_last_updates: Error reading/writing dates of last update: ", e)
+      stop("check_last_updates: Error reading/writing dates of last update: ", e)
     }
   )
   
