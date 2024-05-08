@@ -17,7 +17,7 @@ download_series_full <- function(forcedownload=FALSE) {
                      tools::R_user_dir("tesoroseries", which = "data"))
   
   if(check_db_lock() & !forcedownload) {
-    stop("add_serie: database lock is set and forcedownload is set to FALSE.")
+    stop("download_serie: database lock is set and forcedownload is set to FALSE.")
   }
   
   

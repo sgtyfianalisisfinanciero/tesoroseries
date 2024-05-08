@@ -164,6 +164,7 @@ set_last_update_server <- function(equal_to_local=FALSE) {
 check_db_lock <- function() {
   .datos_server_path <- getOption("datos_server_path")
   lockfilename <- paste0(.datos_server_path,
+                         "/",
                          getOption("lockfilename"))
   
   return(fs::file_exists(lockfilename) |> _[[1]])
@@ -181,6 +182,7 @@ check_db_lock <- function() {
 set_db_lock <- function() {
   .datos_server_path <- getOption("datos_server_path")
   lockfilename <- paste0(.datos_server_path,
+                         "/",
                          getOption("lockfilename"))
   
   tryCatch({
@@ -203,6 +205,7 @@ set_db_lock <- function() {
 remove_db_lock <- function() {
   .datos_server_path <- getOption("datos_server_path")
   lockfilename <- paste0(.datos_server_path,
+                         "/",
                          getOption("lockfilename"))
   
   tryCatch({
