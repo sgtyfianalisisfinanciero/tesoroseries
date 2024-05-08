@@ -6,7 +6,7 @@
                                    "/", Sys.getenv("USERPROFILE")), "/OneDrive - MINECO/General - SG Análisis Financiero-Teams/tesoroseries")
   
   options("datos_server_path"=.datos_server_path)
-  options("tesoroseries_version"="v0.31-20240506")
+  options("tesoroseries_version"="v0.32-20240508")
   options("lockfilename"=".tesoroseries_lock")
   options("local_last_update_file"=".local_last_update")
   options("server_last_update_file"=".server_last_update")
