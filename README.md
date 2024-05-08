@@ -1,2 +1,2 @@
-# bdeseries
-Búsqueda y descarga de series del Banco de España
+# tesoroseries
+Búsqueda y descarga de series
