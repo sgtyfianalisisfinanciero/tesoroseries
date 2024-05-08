@@ -67,6 +67,7 @@ update_local_to_server <- function(force_update_to_server=FALSE) {
     
   },
   error = function(e) {
+    remove_db_lock()
     stop("update_local_to_server: ", e)
   })
   
