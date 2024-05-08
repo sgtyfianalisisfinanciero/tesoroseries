@@ -24,6 +24,12 @@ add_serie_local <- function(.df,
                       verbose=FALSE,
                       forceoverwrite = FALSE) {
   
+  .codigo_clean <- stringr::str_replace_all(
+    .codigo,
+    "[áéíóú':]",
+    ""
+  )
+  
   .datos_server_path <- getOption("datos_server_path")
   
   .datos_path <- gsub("\\\\",

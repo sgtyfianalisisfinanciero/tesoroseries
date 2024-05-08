@@ -217,5 +217,14 @@ remove_db_lock <- function() {
 }
 
 
+clean_codigo <- function(.codigo) {
+  return(
+    stringr::str_replace_all(
+      .codigo,
+      "[áéíóú':]",
+      ""
+    )
+  )
+}
 
 

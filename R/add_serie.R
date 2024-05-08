@@ -32,6 +32,7 @@ add_serie <- function(.df,
                      "/",
                      tools::R_user_dir("tesoroseries", which = "data"))
   
+  .codigo_clean <- clean_codigo(.codigo)
   
   if(check_db_lock() & !forceoverwrite) {
     stop("add_serie: database lock is set and forceoverwrite is set to FALSE.")
